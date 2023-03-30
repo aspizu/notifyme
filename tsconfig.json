@@ -4,12 +4,12 @@
     "target": "ESNext",
     "baseUrl": ".",
     "paths": {
-      "/static/js/*": ["static/js/*"]
+      "/static/*": ["static/*"]
     },
     "strict": true,
     "alwaysStrict": true,
     "strictNullChecks": true,
     "noImplicitAny": true
   },
-  "include": ["static/js/**/*.ts"]
+  "include": ["static/**/*.ts"]
 }
