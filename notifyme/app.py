@@ -16,7 +16,7 @@ class App:
     def POST(self, path: str, require_logged_in: bool = True):
         return POST_endpoint_decorator(self, path, require_logged_in=require_logged_in)
 
-    def GET(self, path: str, require_logged_in: bool = False):
+    def GET(self, path: str, require_logged_in: bool = True):
         return GET_endpoint_decorator(self, path, require_logged_in=require_logged_in)
 
     def frontend(self, request: Request) -> Response:

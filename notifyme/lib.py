@@ -19,20 +19,13 @@ if TYPE_CHECKING:
     from .app import App
 
 
-JSON = (
-    None
-    | bool
-    | int
-    | float
-    | str
-    | list["JSON"]
-    | dict[None | bool | int | float | str, "JSON"]
-)
-
 try:
     from rich import print
 except ImportError:
     print = print
+
+
+JSON = Any
 
 
 def db():
@@ -64,12 +57,6 @@ def isoftype(obj: Any, T: Any) -> bool:
         return isinstance(obj, T)
     elif T is None:
         return obj is None
-    elif issubclass(T, Model):
-        try:
-            T(obj)
-            return True
-        except TypeError:
-            pass
     elif isinstance(T, types.UnionType):
         return any(isoftype(obj, subT) for subT in T.__args__)
     elif isinstance(T, types.GenericAlias) and T.__name__ == "list":
@@ -80,6 +67,12 @@ def isoftype(obj: Any, T: Any) -> bool:
         return isinstance(obj, dict) and all(
             isoftype(each, T.__args__[1]) for each in obj.values()  # type: ignore
         )
+    elif issubclass(T, Model):  # type: ignore
+        try:
+            T(obj)
+            return True
+        except TypeError:
+            pass
     return False
 
 
@@ -146,18 +139,58 @@ def POST_endpoint_decorator(app: "App", path: str, require_logged_in: bool = Tru
     return decorator
 
 
+def cast_parameter(parameter: str, t: Any) -> Any:
+    if t is bool:
+        return bool(parameter)
+    if t is str:
+        return parameter
+    if t is int:
+        return int(parameter)
+    if t is float:
+        return float(parameter)
+    if t is type(None) or t is None:
+        return None
+    if isinstance(t, types.UnionType):
+        for i in t.__args__:
+            try:
+                return cast_parameter(parameter, i)
+            except (ValueError, TypeError):
+                continue
+
+
 def GET_endpoint_decorator(app: "App", path: str, require_logged_in: bool = True):
     def decorator(func: Any):
+        if require_logged_in and "session" not in func.__annotations__:
+            raise SyntaxError(
+                "GET Endpoint with require logged in must take a session parameter with type .session.Session"
+            )
+
         async def endpoint(request: Request) -> Response:
+            params = {**request.path_params, **request.query_params}
+            for name, t in func.__annotations__.items():
+                if name in ("request", "session", "return"):
+                    continue
+                if name not in params:
+                    if isinstance(t, types.UnionType):
+                        if type(None) in t.__args__:
+                            params[name] = None
+                    else:
+                        return failed_response(f"MISSING PARAMETER {name}")
+                try:
+                    params[name] = cast_parameter(params[name], t)
+                except (ValueError, TypeError):
+                    return failed_response(f"PARAMETER {name} HAS INCORRECT TYPE")
+                if not isoftype(params[name], t):
+                    return failed_response(f"PARAMETER {name} HAS INCORRECT TYPE")
             if require_logged_in:
                 session = app.sessions.get(request)
                 if session is None:
                     return failed_response(
                         "this API endpoint requires you to be logged in."
                     )
-                return await func(request, session, **request.path_params)
+                return await func(request, session, **params)
             else:
-                return await func(request, **request.path_params)
+                return await func(request, **params)
 
         app.routes.append(Route(path, endpoint=endpoint, methods=["GET"]))
         return func

@@ -4,6 +4,7 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from . import app
+from .db import user
 from .lib import db, failed_response, successful_response, time
 from .session import Session, hash_password, is_password_valid, is_username_valid
 
@@ -103,16 +104,13 @@ async def update_profile(
 
 
 @app.GET("/api/check_session")
-async def SQL(request: Request) -> Response:
+async def SQL(request: Request, session: Session) -> Response:
     return successful_response()
 
 
 @app.GET("/api/user/{username}", require_logged_in=False)
-async def get_user(request: Request, username: str):
-    con = db()
-    cur = con.cursor()
-    cur.execute("SELECT displayname, tags FROM user WHERE username = ?", [username])
-    row = cur.fetchone()
-    if row is None:
-        return failed_response("username not found")
-    return successful_response(displayname=row[0], tags=json.loads(row[1]))
+async def get_user(request: Request, username: str) -> Response:
+    try:
+        return successful_response(user=user.get_user(username).json())
+    except ValueError:
+        return failed_response("Username not found.")

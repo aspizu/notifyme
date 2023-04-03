@@ -11,7 +11,8 @@ create table notification (
   id         integer primary key,
   author     integer not null,
   content    text not null,
+  tags       text not null, -- JSON Array of tags
+  recipients text not null, -- JSON Array of usernames
   time       integer not null,
-  recipients text not null, -- JSON Array of usernames or tags
   foreign key(author) references user(id)
 );

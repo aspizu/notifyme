@@ -4,11 +4,16 @@ from dataclasses import dataclass
 
 from starlette.requests import Request
 
+from .db.user import get_user
+
 
 @dataclass(frozen=True)
 class Session:
     token: str
     username: str
+
+    def get_user(self):
+        return get_user(self.username)
 
 
 def is_username_valid(username: str) -> bool:
