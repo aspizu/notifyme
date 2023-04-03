@@ -223,6 +223,4 @@ Thumbs.db
 
 
 
-static/*.js
-static/*.css
-*.css.map
+dist/

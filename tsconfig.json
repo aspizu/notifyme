@@ -4,12 +4,13 @@
     "target": "ESNext",
     "baseUrl": ".",
     "paths": {
-      "/static/*": ["static/*"]
+      "/dist/*": ["client/*"]
     },
+    "outDir": "dist",
     "strict": true,
     "alwaysStrict": true,
     "strictNullChecks": true,
     "noImplicitAny": true
   },
-  "include": ["static/**/*.ts"]
+  "include": ["client/**/*.ts"]
 }
