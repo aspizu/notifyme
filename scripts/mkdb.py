@@ -1,6 +1,9 @@
+import os
 import sqlite3
 
-con = sqlite3.connect("database.db")
+database = "database.db"
+os.remove(database)
+con = sqlite3.connect(database)
 cur = con.cursor()
-con.executescript(open("server/schema.sql").read())
+cur.executescript(open("server/schema.sql").read())
 con.commit()
