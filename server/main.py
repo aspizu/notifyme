@@ -66,7 +66,7 @@ class Main:
         return GET_endpoint_decorator(self, path, require_logged_in, permissions)
 
     def application_route(self, request: Request) -> FileResponse:
-        return FileResponse("client/application.html")
+        return FileResponse("client/app.html")
 
     def db(self):
         con = sqlite3.connect(self.database)
@@ -91,6 +91,7 @@ class Main:
             routes=[
                 *self.routes,
                 Mount("/dist", app=StaticFiles(directory="dist"), name="dist"),
+                Mount("/static", app=StaticFiles(directory="static"), name="static"),
                 Route("/{path:path}", self.application_route),
             ],
         )

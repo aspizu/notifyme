@@ -62,8 +62,8 @@ async def change_password(
     return {}
 
 
-@main.POST("/api/update_profile")
-async def update_profile(
+@main.POST("/api/edit_profile")
+async def edit_profile(
     request: Request,
     session: Session,
     display_name: str | None,
