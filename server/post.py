@@ -34,7 +34,9 @@ async def get_post(request: Request, session: Session, id: int) -> RESPONSE:
         "SELECT emoji, COUNT(*) as count FROM reaction WHERE post_id = ? GROUP BY emoji",
         [id],
     ).fetchall()
-    reactions: dict[int, int] = {row["emoji"]: row["count"] for row in rows}
+    reactions: dict[int, tuple[int, bool]] = {
+        row["emoji"]: row["count"] for row in rows
+    }
     return {
         "author": {
             "id": row["author_id"],

@@ -3,7 +3,12 @@ export function setCookie(name: string, val: string) {
   const value = val
   date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000) /* 7 Days */
   document.cookie =
-    name + '=' + value + '; expires=' + date.toUTCString() + '; path=/'
+    name +
+    '=' +
+    value +
+    '; expires=' +
+    date.toUTCString() +
+    '; path=/; SameSite=Strict;'
 }
 
 export function getCookie(name: string) {

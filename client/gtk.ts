@@ -13,16 +13,16 @@ export function newElement(
   ...children: ElementChildren
 ): any {
   const element = document.createElement(tagName)
-  if (params.cls) element.classList.add(...params.cls.split(' '))
+  if (params.cls) element.classList.add(...params.cls.split(" "))
   if (params.text) element.innerText = params.text
   if (params.css) element.style.cssText = params.css
   for (const [name, value] of Object.entries(params)) {
-    if (['cls', 'text', 'css'].includes(name)) continue
+    if (["cls", "text", "css"].includes(name)) continue
     /* @ts-ignore */
     element[name] = value
   }
   element.append(
-    ...children.map((child) => (child instanceof Widget ? child.div : child))
+    ...children.map((child) => (child instanceof Widget ? child.div : child)),
   )
   return element
 }
@@ -31,14 +31,14 @@ export function newDiv(
   params: ElementParams = {},
   ...children: ElementChildren
 ): HTMLDivElement {
-  return newElement('div', params, ...children)
+  return newElement("div", params, ...children)
 }
 
 export function newSpan(
   params: ElementParams = {},
   ...children: ElementChildren
 ): HTMLSpanElement {
-  return newElement('span', params, ...children)
+  return newElement("span", params, ...children)
 }
 
 export class Widget {

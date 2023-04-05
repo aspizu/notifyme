@@ -1,17 +1,16 @@
-import { main } from './main.js'
-import { getCookie, setCookie } from './cookie.js'
+import { getCookie, setCookie } from "./cookie.js"
 
-type User = {
+export type User = {
   id: number
   username: string
   display_name: string
-  avatar_url: string
+  avatar_url: string | null
   tags: string[]
   permission: number
   created_time: number
 }
 
-type Post = {
+export type Post = {
   author: User
   content: string
   tags: string[]
@@ -22,7 +21,7 @@ type Post = {
 
 export async function post(url: string, body: any = {}) {
   const response = await (
-    await fetch(url, { method: 'POST', body: JSON.stringify(body) })
+    await fetch(url, { method: "POST", body: JSON.stringify(body) })
   ).json()
   if (!response.success) {
     throw new Error(response.error)
@@ -32,7 +31,7 @@ export async function post(url: string, body: any = {}) {
 
 export async function get(url: string, body: any = {}) {
   const response = await (
-    await fetch(url + '?' + new URLSearchParams(body), { method: 'GET' })
+    await fetch(url + "?" + new URLSearchParams(body), { method: "GET" })
   ).json()
   if (!response.success) {
     throw new Error(response.error)
@@ -42,19 +41,19 @@ export async function get(url: string, body: any = {}) {
 
 export async function login(username: string, password: string) {
   const token: string = (
-    await post('/api/login', { username: username, password: password })
+    await post("/api/login", { username: username, password: password })
   ).token
-  setCookie('username', username)
-  setCookie('token', token)
+  setCookie("username", username)
+  setCookie("token", token)
 }
 
 export async function register(
   username: string,
   displayName: string,
-  password: string
+  password: string,
 ): Promise<number> {
   return (
-    await post('/api/register', {
+    await post("/api/register", {
       username: username,
       display_name: displayName,
       password: password,
@@ -63,8 +62,8 @@ export async function register(
 }
 
 export async function changePassword(oldPassword: string, newPassword: string) {
-  await post('/api/change_password', {
-    username: main.username,
+  await post("/api/change_password", {
+    username: getCookie("username"),
     old_password: oldPassword,
     new_password: newPassword,
   })
@@ -81,7 +80,7 @@ export async function editProfile({
   avatarUrl,
   tags,
 }: editProfileOptions = {}) {
-  await post('/api/edit_profile', {
+  await post("/api/edit_profile", {
     display_name: displayName ? displayName != undefined : null,
     avatar_url: avatarUrl ? avatarUrl != undefined : null,
     tags: tags ? tags != undefined : null,
@@ -89,42 +88,44 @@ export async function editProfile({
 }
 
 export async function checkSession() {
-  await get('/api/check_session')
+  await get("/api/check_session")
 }
 
-export async function getUser(username: string): Promise<{
-  id: number
-  display_name: string
-  avatar_url: string
-  tags: string[]
-  permission: number
-  created_time: number
-}> {
-  return await post('/api/get_user', { username: username })
+export async function isLoggedIn() {
+  try {
+    await checkSession()
+    return true
+  } catch {
+    return false
+  }
+}
+
+export async function getUser(username: string): Promise<User> {
+  return await get("/api/get_user", { username: username })
 }
 
 export async function deleteUser(password: string) {
-  await post('/api/delete_user', {
-    username: getCookie('username'),
+  await post("/api/delete_user", {
+    username: getCookie("username"),
     password: password,
   })
 }
 
 export async function getPost(id: number): Promise<Post> {
-  return await get('/api/get_post', { id: id })
+  return await get("/api/get_post", { id: id })
 }
 
 export async function getPosts(): Promise<Post[]> {
-  return (await get('/api/get_posts')).posts
+  return (await get("/api/get_posts")).posts
 }
 
 export async function newPost(
   content: string,
   tags: string[],
-  recipients: string[]
+  recipients: string[],
 ): Promise<number> {
   return (
-    await post('/api/new_post', {
+    await post("/api/new_post", {
       content: content,
       tags: tags,
       recipients: recipients,
@@ -140,9 +141,9 @@ type editPostOptions = {
 
 export async function editPost(
   id: number,
-  { content, tags, recipients }: editPostOptions = {}
+  { content, tags, recipients }: editPostOptions = {},
 ) {
-  await post('/api/edit_post', {
+  await post("/api/edit_post", {
     id: id,
     content: content ? content != undefined : null,
     tags: tags ? tags != undefined : null,
@@ -151,13 +152,13 @@ export async function editPost(
 }
 
 export async function deletePost(id: number) {
-  await post('/api/delete_post', { id: id })
+  await post("/api/delete_post", { id: id })
 }
 
 export async function addReaction(postId: number) {
-  await post('/api/add_reaction', { post_id: postId })
+  await post("/api/add_reaction", { post_id: postId })
 }
 
 export async function removeReaction(postId: number) {
-  await post('/api/remove_reaction', { post_id: postId })
+  await post("/api/remove_reaction", { post_id: postId })
 }

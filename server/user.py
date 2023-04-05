@@ -105,6 +105,7 @@ async def get_user(request: Request, session: Session, username: str) -> RESPONS
         raise Error("Username not found.")
     return {
         "id": row["id"],
+        "username": username,
         "display_name": row["display_name"],
         "avatar_url": row["avatar_url"],
         "tags": json.loads(row["tags"]),
