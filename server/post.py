@@ -31,13 +31,22 @@ async def get_post(request: Request, session: Session, id: int) -> RESPONSE:
     if not (session.username in recipients or any(tag in tags for tag in session.tags)):
         raise Error("Not subscribed.")
     rows = cur.execute(
-        "SELECT emoji, COUNT(*) as count FROM reaction WHERE post_id = ? GROUP BY emoji",
-        [id],
+        """SELECT 
+           emoji,
+           COUNT(*) AS count,
+           COUNT(
+               CASE WHEN reaction.user_id = ? THEN TRUE ELSE FALSE END
+           ) AS is_user_reaction
+           FROM reaction
+           WHERE post_id = ?
+           GROUP BY emoji""",
+        [session.user_id, id],
     ).fetchall()
     reactions: dict[int, tuple[int, bool]] = {
-        row["emoji"]: row["count"] for row in rows
+        row["emoji"]: (row["count"], bool(row["is_user_reaction"])) for row in rows
     }
     return {
+        "id": id,
         "author": {
             "id": row["author_id"],
             "username": row["author_username"],
@@ -80,10 +89,20 @@ async def get_posts(request: Request, session: Session) -> RESPONSE:
         ):
             continue
         rows2 = cur.execute(
-            "SELECT emoji, COUNT(*) as count FROM reaction WHERE post_id = ? GROUP BY emoji",
-            [row["id"]],
+            """SELECT 
+               emoji,
+               COUNT(*) AS count,
+               COUNT(
+                   CASE WHEN reaction.user_id = ? THEN 1 ELSE 0 END
+               ) AS is_user_reaction
+               FROM reaction
+               WHERE post_id = ?
+               GROUP BY emoji""",
+            [session.user_id, id],
         ).fetchall()
-        reactions: dict[int, int] = {row["emoji"]: row["count"] for row in rows2}
+        reactions: dict[int, tuple[int, bool]] = {
+            row["emoji"]: (row["count"], bool(row["is_user_reaction"])) for row in rows2
+        }
         posts.append(
             {
                 "id": row["id"],

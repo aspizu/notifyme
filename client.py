@@ -18,8 +18,4 @@ def get(endpoint: str, params: dict[str, Any] = {}) -> dict[str, Any]:
 json = post("login", {"username": "aspizu", "password": "br000tal"})
 session.cookies["token"] = json["token"]
 
-print(
-    get(
-        "get_posts",
-    )
-)
+print(get("get_post", {"id": 1}))

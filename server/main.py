@@ -33,8 +33,8 @@ class Main:
         Omit the `session: Session` parameter if `require_logged_in` is set to `False`.
 
         Any other arguments will be taken from the request's JSON body.
-        Any argument with the type in a union with `None` will be treated as optional and
-        will default to `None` if not present in the request's JSON body.
+        Any argument with the type in a union with `None` will be treated as optional
+        and will default to `None` if not present in the request's JSON body.
 
         Raising a `Error` will respond with
           >>> {"success": False, "error": "Error message here..."}
@@ -57,8 +57,8 @@ class Main:
         Omit the `session: Session` parameter if `require_logged_in` is set to `False`.
 
         Any other arguments will be taken from the request's query parameters.
-        Any argument with the type in a union with `None` will be treated as optional and
-        will default to `None` if that query parameter was not passed.
+        Any argument with the type in a union with `None` will be treated as optional
+        and will default to `None` if that query parameter was not passed.
 
         Raising a `Error` will respond with
           >>> {"success": False, "error": "Error message here..."}

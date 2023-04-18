@@ -21,9 +21,14 @@ export function newElement(
     /* @ts-ignore */
     element[name] = value
   }
-  element.append(
-    ...children.map((child) => (child instanceof Widget ? child.div : child)),
-  )
+  for (const child of children) {
+    if (child instanceof Widget) {
+      element.append(child.div)
+      child.onrender(element)
+    } else {
+      element.append(child)
+    }
+  }
   return element
 }
 
@@ -34,11 +39,40 @@ export function newDiv(
   return newElement("div", params, ...children)
 }
 
+export function newRow(params: ElementParams = {}, ...children: ElementChildren) {
+  const div = newDiv(params, ...children)
+  div.classList.add("row")
+  return div
+}
+
+export function newColumn(params: ElementParams = {}, ...children: ElementChildren) {
+  const div = newDiv(params, ...children)
+  div.classList.add("column")
+  return div
+}
+
 export function newSpan(
+  text: string,
   params: ElementParams = {},
   ...children: ElementChildren
 ): HTMLSpanElement {
-  return newElement("span", params, ...children)
+  params.text = text
+  const span: HTMLSpanElement = newElement("span", params, ...children)
+  return span
+}
+
+export function newButton(
+  text: string,
+  params: ElementParams = {},
+  ...children: ElementChildren
+) {
+  params.text = text
+  const button: HTMLButtonElement = newElement("button", params, ...children)
+  return button
+}
+
+export function newFlexDivider() {
+  return newDiv({ cls: "mar-right-auto" })
 }
 
 export class Widget {
@@ -46,5 +80,24 @@ export class Widget {
 
   constructor(params: ElementParams = {}, ...children: ElementChildren) {
     this.div = newDiv(params, ...children)
+    if (params.then) params.then(this)
   }
+
+  append(...children: ElementChildren) {
+    for (const child of children) {
+      if (child instanceof Widget) {
+        this.div.append(child.div)
+        this.onrender(this)
+      } else {
+        this.div.append(child)
+      }
+    }
+  }
+
+  replace(...children: ElementChildren) {
+    this.div.replaceChildren()
+    this.append(...children)
+  }
+
+  onrender(parent: HTMLElement | Widget) {}
 }

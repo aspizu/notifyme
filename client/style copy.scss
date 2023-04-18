@@ -1,16 +1,16 @@
 $font-family: "Inter";
-$background:  #282c2f;
+$background:  #1f1f1f;
 $foreground:  #ffffff;
 $primary:     #1c87fa;
 $destructive: #ff3e29;
-$border-radius: 5px;
-$border-width: 1.5px;
+$border-radius: 2px;
+$border-width: 0.1rem;
 $ease-out-quart: 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 $shadow-normal: 0px 2px 4px rgba(0, 0, 0, 0.2);
-$size-0:  8px;
-$size-1: 16px;
-$size-2: 32px;
-$size-3: 64px;
+$size-0:  4px;
+$size-1:  8px;
+$size-2: 16px;
+$size-3: 32px;
 
 @function foreground($amount: 0%) {
   @return mix($background, $foreground, $amount);
@@ -120,7 +120,7 @@ input {
   background: $background;
   border: $border-width solid $border;
   border-radius: $border-radius;
-  padding: $size-0 $size-1;
+  padding: $size-1 $size-2;
   gap: $size-1;
 
   &:hover {

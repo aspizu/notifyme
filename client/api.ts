@@ -11,12 +11,13 @@ export type User = {
 }
 
 export type Post = {
+  id: number
   author: User
   content: string
   tags: string[]
   recipients: string[]
   created_time: number
-  reactions: { [index: number]: number }
+  reactions: { [index: number]: [number, boolean] }
 }
 
 export async function post(url: string, body: any = {}) {
@@ -155,10 +156,10 @@ export async function deletePost(id: number) {
   await post("/api/delete_post", { id: id })
 }
 
-export async function addReaction(postId: number) {
-  await post("/api/add_reaction", { post_id: postId })
+export async function addReaction(postId: number, emoji: number) {
+  await post("/api/add_reaction", { post_id: postId, emoji: emoji })
 }
 
-export async function removeReaction(postId: number) {
-  await post("/api/remove_reaction", { post_id: postId })
+export async function removeReaction(postId: number, emoji: number) {
+  await post("/api/remove_reaction", { post_id: postId, emoji: emoji })
 }
