@@ -4,24 +4,25 @@ export function setCookie(name: string, val: string) {
   date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000) /* 7 Days */
   document.cookie =
     name +
-    '=' +
+    "=" +
     value +
-    '; expires=' +
+    "; expires=" +
     date.toUTCString() +
-    '; path=/; SameSite=Strict;'
+    "; path=/; SameSite=Strict;"
 }
 
-export function getCookie(name: string) {
-  const parts = ('; ' + document.cookie).split('; ' + name + '=')
+export function getCookie(name: string): string {
+  const parts = ("; " + document.cookie).split("; " + name + "=")
   if (parts.length == 2) {
     // @ts-ignore
-    return parts.pop().split(';').shift()
+    return parts.pop().split(";").shift()
   }
+  return ""
 }
 
 export function deleteCookie(name: string) {
   const date = new Date()
   // Set it expire in -1 days
   date.setTime(date.getTime() + -1 * 24 * 60 * 60 * 1000)
-  document.cookie = name + '=; expires=' + date.toUTCString() + '; path=/'
+  document.cookie = name + "=; expires=" + date.toUTCString() + "; path=/"
 }

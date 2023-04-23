@@ -62,12 +62,16 @@ export function newSpan(
 }
 
 export function newButton(
-  text: string,
+  child: HTMLElement | string | Promise<HTMLElement>,
   params: ElementParams = {},
   ...children: ElementChildren
 ) {
-  params.text = text
   const button: HTMLButtonElement = newElement("button", params, ...children)
+  if (child instanceof Promise)
+    child.then((value) => {
+      button.append(value)
+    })
+  else button.append(child)
   return button
 }
 
@@ -94,10 +98,24 @@ export class Widget {
     }
   }
 
-  replace(...children: ElementChildren) {
+  replaceChildren(...children: ElementChildren) {
     this.div.replaceChildren()
     this.append(...children)
   }
 
   onrender(parent: HTMLElement | Widget) {}
+}
+
+export async function svg(url: string) {
+  const response = await fetch(url)
+  const svgData = await response.text()
+  const parser = new DOMParser()
+  const svgDoc = parser.parseFromString(svgData, "image/svg+xml")
+  return svgDoc.documentElement
+}
+
+export async function icon(name: string) {
+  const element = await svg(`/static/icons/${name}.svg`)
+  element.classList.add("icon")
+  return element
 }

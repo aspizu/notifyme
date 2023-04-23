@@ -4,17 +4,20 @@ export class Input extends gtk.Widget {
   input: HTMLInputElement
   tooltip: HTMLDivElement
   validatorFunction: (value: string) => string | undefined
+  onInvalid: (isValid: boolean) => void
 
   constructor(
     validatorFunction: (value: string) => string | undefined,
     onInvalid: (isValid: boolean) => void = (isValid: boolean) => undefined,
+    params: gtk.ElementParams = {},
   ) {
     super({ cls: "tooltip-container" })
-    this.input = gtk.newElement("input", { cls: "input", type: "text" })
+    this.input = gtk.newElement("input", { cls: "input", type: "text", ...params })
     this.tooltip = gtk.newDiv({ cls: "tooltip-destructive hidden" })
     this.validatorFunction = validatorFunction
+    this.onInvalid = onInvalid
     this.input.addEventListener("input", () => {
-      onInvalid(this.isValid())
+      this.isValid()
     })
     this.div.append(this.input, this.tooltip)
   }
@@ -22,15 +25,21 @@ export class Input extends gtk.Widget {
   isValid() {
     const error = this.validatorFunction(this.input.value)
     if (error) {
-      this.tooltip.classList.remove("hidden")
-      this.tooltip.textContent = error
-      this.input.classList.add("error")
+      this.setError(error)
+      this.onInvalid(false)
       return false
     } else {
       this.tooltip.classList.add("hidden")
       this.input.classList.remove("error")
+      this.onInvalid(true)
       return true
     }
+  }
+
+  setError(message: string) {
+    this.tooltip.classList.remove("hidden")
+    this.tooltip.textContent = message
+    this.input.classList.add("error")
   }
 }
 
@@ -72,14 +81,18 @@ export class PasswordInput extends gtk.Widget {
   isValid() {
     const error = this.validatorFunction(this.input.value)
     if (error) {
-      this.tooltip.classList.remove("hidden")
-      this.tooltip.textContent = error
-      this.container.classList.add("error")
+      this.setError(error)
       return false
     } else {
       this.tooltip.classList.add("hidden")
       this.container.classList.remove("error")
       return true
     }
+  }
+
+  setError(message: string) {
+    this.tooltip.classList.remove("hidden")
+    this.tooltip.textContent = message
+    this.container.classList.add("error")
   }
 }

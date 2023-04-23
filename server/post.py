@@ -98,7 +98,7 @@ async def get_posts(request: Request, session: Session) -> RESPONSE:
                FROM reaction
                WHERE post_id = ?
                GROUP BY emoji""",
-            [session.user_id, id],
+            [session.user_id, row["id"]],
         ).fetchall()
         reactions: dict[int, tuple[int, bool]] = {
             row["emoji"]: (row["count"], bool(row["is_user_reaction"])) for row in rows2
@@ -161,7 +161,11 @@ async def edit_post(
     cur.execute(
         *sql.update(
             "post",
-            set={"content": content, "tags": tags, "recipients": recipients},
+            set={
+                "content": content,
+                "tags": json.dumps(tags),
+                "recipients": json.dumps(recipients),
+            },
             where="id = ?",
             args=[id],
         )

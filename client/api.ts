@@ -48,6 +48,10 @@ export async function login(username: string, password: string) {
   setCookie("token", token)
 }
 
+export async function logout() {
+  await post("/api/logout")
+}
+
 export async function register(
   username: string,
   displayName: string,
@@ -82,9 +86,9 @@ export async function editProfile({
   tags,
 }: editProfileOptions = {}) {
   await post("/api/edit_profile", {
-    display_name: displayName ? displayName != undefined : null,
-    avatar_url: avatarUrl ? avatarUrl != undefined : null,
-    tags: tags ? tags != undefined : null,
+    display_name: displayName != undefined ? displayName : null,
+    avatar_url: avatarUrl != undefined ? avatarUrl : null,
+    tags: tags != undefined ? tags : null,
   })
 }
 
@@ -146,9 +150,9 @@ export async function editPost(
 ) {
   await post("/api/edit_post", {
     id: id,
-    content: content ? content != undefined : null,
-    tags: tags ? tags != undefined : null,
-    recipients: recipients ? recipients != undefined : null,
+    content: content != undefined ? content : null,
+    tags: tags != undefined ? tags : null,
+    recipients: recipients != undefined ? recipients : null,
   })
 }
 
