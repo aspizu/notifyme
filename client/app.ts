@@ -22,8 +22,7 @@ export class App extends gtk.Widget {
           event.clientY >= popoverRect.top &&
           event.clientY <= popoverRect.bottom
         if (!isInsidePopover) {
-          this.activePopover.div.remove()
-          this.activePopover = undefined
+          app.removePopover()
         }
       }
     })
@@ -31,7 +30,7 @@ export class App extends gtk.Widget {
 
   popover(popover: Popover) {
     if (this.activePopover) {
-      this.activePopover.div.remove()
+      app.removePopover()
     }
     this.activePopover = popover
     document.body.append(popover.div)
@@ -40,9 +39,10 @@ export class App extends gtk.Widget {
 
   removePopover() {
     if (this.activePopover) {
-      this.activePopover.div.remove()
+      this.activePopover.remove(() => {
+        this.activePopover = undefined
+      })
     }
-    this.activePopover = undefined
   }
 
   save() {

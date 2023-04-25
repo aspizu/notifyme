@@ -1,12 +1,12 @@
 $font-family: "Inter";
-$background:  #26282e;
+$background:  #101010;
 $foreground:  #ffffff;
-$primary:     #289be3;
-$destructive: #df145b;
+$primary:     #0c5eeb;
+$destructive: #df1433;
 $border-radius: 3px;
 $border-width: 0.1em;
 $ease-out-quart: 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-$shadow-normal: 0px 2px 4px rgba(0, 0, 0, 0.2);
+$shadow-normal: 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 1px 8px rgba(0, 0, 0, 0.1);
 $size-0:   8px;
 $size-1:  16px;
 $size-2:  32px;
@@ -45,6 +45,7 @@ $size-3:  64px;
 .gap-2 { gap:     $size-2 }
 .gap-3 { gap:     $size-3 }
 .large { font-size: 24px }
+.medium { font-size: 16px }
 .small { font-size: 10px }
 .bold { font-weight: bold }
 .italic { font-style: italic }
@@ -91,12 +92,12 @@ input {
 
 .input {
   background: background(2%);
-  border: $border-width solid background(32%);
+  border: $border-width solid background(8%);
   border-radius: $border-radius;
   padding: $size-0;
   gap: $size-0;
   transition: all $ease-out-quart;
-  box-shadow: inset 0px -16px 16px 0px rgba(255, 255, 255, 0.02);
+  // box-shadow: inset 0px -16px 16px 0px rgba(255, 255, 255, 0.02);
 
   &:hover {
     border-color: $primary;
@@ -104,28 +105,28 @@ input {
 
   &:focus, &:focus-within {
     border-color: $primary;
-    outline: ($border-width * 2) solid transparentize($primary, 0.8);
+    outline: ($border-width * 4) solid transparentize($primary, 0.8);
   }
 
   &.error {
     border: $border-width solid $destructive;
 
     &:focus, &:focus-within {
-      outline: ($border-width * 2) solid transparentize($destructive, 0.8);
+      outline: ($border-width * 4) solid transparentize($destructive, 0.8);
     }
   }
 }
 
 @mixin button($background) {
   @extend .row;
-  $border: lighten($background, 16%);
+  $border: darken($background, 8%);
   transition: all $ease-out-quart;
   background: $background;
-  border: $border-width solid $border;
+  // border: $border-width solid $border;
   border-radius: $border-radius;
   padding: $size-0;
   gap: $size-1;
-  box-shadow: inset 0px 16px 16px 0px rgba(255, 255, 255, 0.1);
+  // box-shadow: inset 0px 16px 32px 0px rgba(255, 255, 255, 0.1);
 
   &:hover {
     background: darken($background, 8%);
@@ -140,7 +141,7 @@ input {
   }
 
   &:focus:not(:disabled) {
-    outline: ($border-width * 2) solid transparentize($border, 0.8);
+    outline: ($border-width * 4) solid transparentize($border, 0.8);
   }
 
   &.toggled {
@@ -154,21 +155,25 @@ input {
       background: darken($background, 32%);
     }
   }
+
+  &.medium {
+    padding: $size-0* 1.5;
+  }
 }
 
 .button {
   display: flex;
-  $background: background(8%);
+  $background: background(12%);
   $border: lighten($background, 16%);
   transition: all $ease-out-quart;
   background: $background;
-  border: $border-width solid $border;
+  // border: $border-width solid $border;
   border-radius: $border-radius;
   padding: $size-0;
   gap: $size-1;
 
   &:hover {
-    background: darken($background, 4%);
+    background: lighten($background, 4%);
   }
 
   &:active, &:disabled {
@@ -180,7 +185,7 @@ input {
   }
 
   &:focus:not(:disabled) {
-    outline: ($border-width * 2) solid transparentize($border, 0.8);
+    outline: ($border-width * 4) solid transparentize($border, 0.9);
   }
 
   &.toggled {
@@ -209,7 +214,7 @@ input {
 
 .header-bar {
   background: background(4%);
-  border-bottom: $border-width solid background(12%);
+  // border-bottom: $border-width solid background(12%);
 }
 
 .clear-icon-button {
@@ -242,8 +247,9 @@ input {
 
 .dialog {
   background: background();
-  border: $border-width solid background(4%);
+  // border: $border-width solid background(4%);
   border-radius: $border-radius;
+  box-shadow: $shadow-normal;
 }
 
 @mixin tooltip($background) {
@@ -252,12 +258,11 @@ input {
   left: 50%;
   margin-top: $size-0;
   transform: translateX(-50%);
-  font-size: 14px;
   border-radius: $border-radius;
   background: $background;
   // border: $border-width solid darken($background, 8%);
-  padding: $size-0;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+  padding: $size-0 * 0.5 $size-0;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 
   .tooltip-container:hover &:not(.hidden),
   .tooltip-container:focus-within &:not(.hidden) {
@@ -275,8 +280,8 @@ input {
 }
 
 .menu {
-  background: background(4%);
-  border: $border-width solid background(12%);
+  background: background(8%);
+  // border: $border-width solid background(12%);
   border-radius: $border-radius;
   box-shadow: $shadow-normal;
   padding: $size-0 0px;
@@ -284,7 +289,7 @@ input {
 
 .surface {
   background: background(4%);
-  border: $border-width solid background(12%);
+  // border: $border-width solid background(12%);
   border-radius: $border-radius;
   box-shadow: $shadow-normal;
 }
@@ -300,7 +305,7 @@ input {
 
 .TagPicker__tag {
   background: background(0%);
-  border: $border-width solid background(12%);
+  // border: $border-width solid background(12%);
   border-radius: $border-radius;
   box-shadow: $shadow-normal;
 }
@@ -313,4 +318,36 @@ input {
 
 .icon * {
   stroke: $foreground !important;
+}
+
+@keyframes scale-in {
+  0% {
+    scale: 0;
+    opacity: 0;
+  }
+
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+.scale-in {
+  animation: 0.1s linear scale-in;
+}
+
+@keyframes scale-out {
+  0% {
+    scale: 1;
+    opacity: 1;
+  }
+
+  100% {
+    scale: 0;
+    opacity: 0;
+  }
+}
+
+.scale-out {
+  animation: 0.1s linear scale-out;
 }

@@ -48,14 +48,16 @@ async function login() {
   function onInvalid(isValid: boolean) {
     if (isValid && passwordInput.isValid()) {
       button.disabled = false
+      button.classList.replace("button", "button-primary")
     } else {
       button.disabled = true
+      button.classList.replace("button-primary", "button")
     }
   }
   const usernameInput = new Input(isUsernameValid, onInvalid)
   const passwordInput = new PasswordInput(isPasswordValid, onInvalid)
   const button = gtk.newButton("Login", {
-    cls: "button-primary",
+    cls: "button",
     onclick: async () => {
       if (!usernameInput.isValid()) {
         usernameInput.input.focus()
@@ -76,16 +78,18 @@ async function login() {
       window.location.href = "/"
     },
   })
+  button.disabled = true
   app.replaceChildren(
     gtk.newColumn(
       { cls: "vert-center horiz-center vert-expand" },
       gtk.newColumn(
-        { cls: "surface gap-1 pad-1", css: "min-width: 90%" },
+        { cls: "gap-1", css: "min-width: 80%" },
+        gtk.newSpan("Login to notifyme", { cls: "large bold" }),
         gtk.newSpan("Username"),
         usernameInput,
         gtk.newSpan("Password"),
         passwordInput,
-        button,
+        gtk.newRow({}, button),
       ),
     ),
   )
@@ -107,7 +111,7 @@ function logout() {
       gtk.newButton("Cancel", {
         cls: "button",
         onclick: () => {
-          dialog.div.remove()
+          dialog.remove()
         },
       }),
     ),
@@ -148,7 +152,7 @@ function headerBar() {
                               tagPicker.tags,
                               recipientsPicker.tags,
                             )
-                            dialog.div.remove()
+                            dialog.remove()
                           },
                         })
                         const contentInput = new Input(
@@ -185,7 +189,7 @@ function headerBar() {
                             gtk.newButton("Cancel", {
                               cls: "button",
                               onclick: () => {
-                                dialog.div.remove()
+                                dialog.remove()
                               },
                             }),
                           ),
@@ -402,7 +406,7 @@ function newPost(post: api.Post) {
                                 recipients: recipientsPicker.tags,
                               })
                               content.textContent = contentInput.input.value
-                              dialog.div.remove()
+                              dialog.remove()
                             },
                           })
                           const contentInput = new Input(
@@ -443,7 +447,7 @@ function newPost(post: api.Post) {
                               gtk.newButton("Cancel", {
                                 cls: "button",
                                 onclick: () => {
-                                  dialog.div.remove()
+                                  dialog.remove()
                                 },
                               }),
                             ),
@@ -470,14 +474,14 @@ function newPost(post: api.Post) {
                                   cls: "button-destructive",
                                   onclick: () => {
                                     api.deletePost(post.id)
-                                    dialog.div.remove()
+                                    dialog.remove()
                                     container.remove()
                                   },
                                 }),
                                 gtk.newButton("Cancel", {
                                   cls: "button",
                                   onclick: () => {
-                                    dialog.div.remove()
+                                    dialog.remove()
                                   },
                                 }),
                               ),

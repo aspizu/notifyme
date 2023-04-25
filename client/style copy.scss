@@ -1,16 +1,16 @@
 $font-family: "Inter";
-$background:  #1f1f1f;
+$background:  #26282e;
 $foreground:  #ffffff;
-$primary:     #1c87fa;
-$destructive: #ff3e29;
-$border-radius: 2px;
-$border-width: 0.1rem;
+$primary:     #289be3;
+$destructive: #df145b;
+$border-radius: 3px;
+$border-width: 0.1em;
 $ease-out-quart: 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 $shadow-normal: 0px 2px 4px rgba(0, 0, 0, 0.2);
-$size-0:  4px;
-$size-1:  8px;
-$size-2: 16px;
-$size-3: 32px;
+$size-0:   8px;
+$size-1:  16px;
+$size-2:  32px;
+$size-3:  64px;
 
 @function foreground($amount: 0%) {
   @return mix($background, $foreground, $amount);
@@ -50,6 +50,8 @@ $size-3: 32px;
 .italic { font-style: italic }
 .fg-faint { color: foreground(50%) }
 .bg-1 { background-color: background(5%) }
+.round { border-radius: 999px }
+a { color: $primary }
 
 * {
   color: $foreground;
@@ -88,12 +90,13 @@ input {
 }
 
 .input {
-  background: background(4%);
+  background: background(2%);
   border: $border-width solid background(32%);
   border-radius: $border-radius;
-  padding: 8px;
-  gap: 8px;
+  padding: $size-0;
+  gap: $size-0;
   transition: all $ease-out-quart;
+  box-shadow: inset 0px -16px 16px 0px rgba(255, 255, 255, 0.02);
 
   &:hover {
     border-color: $primary;
@@ -120,22 +123,23 @@ input {
   background: $background;
   border: $border-width solid $border;
   border-radius: $border-radius;
-  padding: $size-1 $size-2;
+  padding: $size-0;
   gap: $size-1;
+  box-shadow: inset 0px 16px 16px 0px rgba(255, 255, 255, 0.1);
 
   &:hover {
     background: darken($background, 8%);
   }
 
-  &:active, &.disabled {
+  &:active, &:disabled {
     background: darken($background, 16%);
   }
 
-  &.disabled {
+  &:disabled {
     cursor: not-allowed;
   }
 
-  &:focus:not(.disabled) {
+  &:focus:not(:disabled) {
     outline: ($border-width * 2) solid transparentize($border, 0.8);
   }
 
@@ -146,7 +150,7 @@ input {
       background: darken($background, 24%);
     }
 
-    &:active, &.disabled {
+    &:active, &:disabled {
       background: darken($background, 32%);
     }
   }
@@ -160,18 +164,22 @@ input {
   background: $background;
   border: $border-width solid $border;
   border-radius: $border-radius;
-  padding: $size-1 $size-2;
+  padding: $size-0;
   gap: $size-1;
 
   &:hover {
     background: darken($background, 4%);
   }
 
-  &:active, &.disabled {
+  &:active, &:disabled {
     background: darken($background, 8%);
   }
 
-  &:focus {
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &:focus:not(:disabled) {
     outline: ($border-width * 2) solid transparentize($border, 0.8);
   }
 
@@ -182,7 +190,7 @@ input {
       background: darken($background, 12%);
     }
 
-    &:active, &.disabled {
+    &:active, &:disabled {
       background: darken($background, 16%);
     }
   }
@@ -198,6 +206,29 @@ input {
 
 .button-primary { @include button($primary) }
 .button-destructive { @include button($destructive) }
+
+.header-bar {
+  background: background(4%);
+  border-bottom: $border-width solid background(12%);
+}
+
+.clear-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $size-0;
+  border-radius: $border-radius;
+  border: $border-width solid transparent;
+
+  &:hover {
+    background: background(8%);
+  }
+
+  &:active {
+    border-color: background(16%);
+    background: background(12%);
+  }
+}
 
 .dialog-container {
   background: rgba(0, 0, 0, 0.5);
@@ -219,12 +250,12 @@ input {
   display: none;
   position: absolute;
   left: 50%;
-  margin-top: $size-1;
+  margin-top: $size-0;
   transform: translateX(-50%);
   font-size: 14px;
   border-radius: $border-radius;
   background: $background;
-  border: $border-width solid lighten($background, 8%);
+  // border: $border-width solid darken($background, 8%);
   padding: $size-0;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
 
@@ -237,11 +268,6 @@ input {
 .tooltip-primary { @include tooltip($primary) }
 .tooltip-destructive { @include tooltip($destructive) }
 
-.header-bar {
-  background: background(4%);
-  border-bottom: $border-width solid background(8%);
-}
-
 .popover {
   display: flex;
   flex-direction: column;
@@ -253,7 +279,7 @@ input {
   border: $border-width solid background(12%);
   border-radius: $border-radius;
   box-shadow: $shadow-normal;
-  padding: 4px 0px;
+  padding: $size-0 0px;
 }
 
 .surface {
@@ -270,4 +296,21 @@ input {
   &:hover {
     background: $primary;
   }
+}
+
+.TagPicker__tag {
+  background: background(0%);
+  border: $border-width solid background(12%);
+  border-radius: $border-radius;
+  box-shadow: $shadow-normal;
+}
+
+.ForYou {
+  background: $primary;
+  border-radius: $border-radius;
+  box-shadow: $shadow-normal;
+}
+
+.icon * {
+  stroke: $foreground !important;
 }

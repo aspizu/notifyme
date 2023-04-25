@@ -8,5 +8,12 @@ export class Dialog extends gtk.Widget {
     this.div.classList.add("dialog-container")
     this.dialog = gtk.newColumn(params, ...children)
     this.div.append(this.dialog)
+    gtk.scalein(this.dialog)
+  }
+
+  remove() {
+    gtk.scaleout(this.dialog, () => {
+      this.div.remove()
+    })
   }
 }

@@ -20,5 +20,13 @@ export class Popover extends gtk.Widget {
     }
     this.div.style.left = x + "px"
     this.div.style.top = this.y + "px"
+    gtk.scalein(this.div)
+  }
+
+  remove(onend: () => any = () => {}) {
+    gtk.scaleout(this.div, () => {
+      this.div.remove()
+      onend()
+    })
   }
 }

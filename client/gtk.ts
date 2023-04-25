@@ -119,3 +119,33 @@ export async function icon(name: string) {
   element.classList.add("icon")
   return element
 }
+
+export function animate(
+  animation: string,
+  element: HTMLElement,
+  onend: (self: HTMLElement, ev: AnimationEvent) => any = () => {},
+) {
+  element.classList.add(animation)
+  element.addEventListener(
+    "animationend",
+    (ev) => {
+      onend(element, ev)
+      element.classList.remove(animation)
+    },
+    { once: true },
+  )
+}
+
+export function scalein(
+  element: HTMLElement,
+  onend?: (self: HTMLElement, ev: AnimationEvent) => any,
+) {
+  animate("scale-in", element, onend)
+}
+
+export function scaleout(
+  element: HTMLElement,
+  onend?: (self: HTMLElement, ev: AnimationEvent) => any,
+) {
+  animate("scale-out", element, onend)
+}
